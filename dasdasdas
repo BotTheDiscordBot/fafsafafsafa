@@ -1,0 +1,40 @@
+-- Script Kiddies Money Giver Tool with Rayfield GUI
+-- Uses Backpack.Delete remote as a money giver exploit
+-- Executor-safe, modular, clean for controlled use
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local BackpackDeleteRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Backpack"):WaitForChild("Delete")
+
+local Window = Rayfield:CreateWindow({
+    Name = "Script Kiddies Money Giver",
+    LoadingTitle = "Loading",
+    LoadingSubtitle = "Script Kiddies Project Zone"
+})
+
+local MainTab = Window:CreateTab("Money Giver")
+
+MainTab:CreateButton({
+    Name = "Give Max Money",
+    Callback = function()
+        local args = {
+            [1] = {
+                [1] = 1,
+                [2] = 99999999 -- Maximum money value
+            }
+        }
+        local nilArg = nil
+        local boolArg = true
+        
+        pcall(function()
+            BackpackDeleteRemote:FireServer(args, nilArg, boolArg)
+            Rayfield:Notify("Money Giver Fired", "Max money given successfully.", 3)
+        end)
+    end
+})
+
+print("✅ Script Kiddies: Money Giver GUI loaded and ready.")
