@@ -1,0 +1,68 @@
+_G.HeadSize = 12
+_G.Disabled = false
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local CollectionService = game:GetService("CollectionService")
+local StarterGui = game:GetService("StarterGui")
+
+local LocalPlayer = Players.LocalPlayer
+
+local allowedPlayers = {
+    ["modelive"] = true,
+    ["bossjaib"] = true
+}
+
+-- Notification
+pcall(function()
+    StarterGui:SetCore("SendNotification", {
+        Title = "ScriptKiddies",
+        Text = "Head Expander Loaded Successfully 🩸",
+        Duration = 5
+    })
+end)
+
+local function expandHead(player)
+    local function onCharacterAdded(character)
+        local head = character:WaitForChild("Head", 5)
+        if not head or allowedPlayers[player.Name] then return end
+
+        -- Only expand if not already tagged
+        if not CollectionService:HasTag(head, "ExpandedHead") then
+            CollectionService:AddTag(head, "ExpandedHead")
+            pcall(function()
+                head.Size = Vector3.new(_G.HeadSize, _G.HeadSize, _G.HeadSize)
+                head.Transparency = 1 -- invisible for you
+                head.CanCollide = false
+                head.Massless = true
+                -- Removed color + neon for visibility
+            end)
+        end
+    end
+
+    -- Force expand current character
+    if player.Character then
+        onCharacterAdded(player.Character)
+    end
+
+    -- Ensure persistent updates
+    player.CharacterAdded:Connect(onCharacterAdded)
+end
+
+local function setup()
+    if _G.Disabled then return end
+
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            expandHead(player)
+        end
+    end
+
+    Players.PlayerAdded:Connect(function(player)
+        if player ~= LocalPlayer then
+            expandHead(player)
+        end
+    end)
+end
+
+setup()
