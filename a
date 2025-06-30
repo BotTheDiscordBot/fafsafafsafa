@@ -54,6 +54,15 @@ elseif PlaceId == 12355337193 then -- Murders vs Sheriffs
     else
         warn('❌ Script Kiddies: Failed to load Murders vs Sheriffs script:', result)
     end
+elseif PlaceId == 2788229376 then -- Da Hood
+    local success, result = pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/Zinzs/luascripting/main/canyoutellitsadahoodscriptornot.lua'))()
+    end)
+    if success then
+        print('✅ Script Kiddies: Da Hood script loaded.')
+    else
+        warn('❌ Script Kiddies: Failed to load Da Hood script:', result)
+    end
 end
 
-print('✅ Script Kiddies Hub fully loaded and executing')
+print('✅ Script Kiddies fully loaded and executing without errors.')
