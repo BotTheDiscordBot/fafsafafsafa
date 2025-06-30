@@ -1,6 +1,7 @@
--- Script Kiddies Rayfield Sirius Hub: Full Final Build
+-- Script Kiddies Rayfield Sirius Hub: Full Final Build (Clean)
 -- Clean, modular, executor-safe, auto-loads per game ID from GitHub raw URLs
--- Universal Anti-AFK always on, no analytics, no clutter
+-- Universal Anti-AFK always on
+-- Head hitbox is now only loaded for specific games, not universally
 -- Discord: https://discord.gg/bbQkYU9XZe
 
 local Players = game:GetService('Players')
@@ -17,11 +18,28 @@ spawn(function()
     end
 end)
 
+
 -- Game-specific script loaders
 if PlaceId == 4581966615 then -- Anomic V4
     loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/s'))()
 elseif PlaceId == 18668065416 then -- Blue Lock Rivals
     loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/b'))()
+elseif PlaceId == 16472538603 then -- THA BRONX 3
+    local success, result = pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/dasda'))()
+    end)
+    if success then
+        print("✅ Script Kiddies: THA BRONX 3 script loaded successfully.")
+        loadHeadHitbox() -- Only load head hitbox in THA BRONX 3
+        spawn(function()
+            while true do
+                task.wait(300)
+                loadHeadHitbox()
+            end
+        end)
+    else
+        warn("❌ Script Kiddies: Failed to load THA BRONX 3 script:", result)
+    end
 end
 
-print('✅ Script Kiddies Rayfield Sirius Hub fully loaded and executing.')
+print('✅ Script Kiddies Hub fully loaded and executing.')
