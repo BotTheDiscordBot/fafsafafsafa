@@ -63,6 +63,15 @@ elseif PlaceId == 2788229376 then -- Da Hood
     else
         warn('❌ Script Kiddies: Failed to load Da Hood script:', result)
     end
+elseif PlaceId == 16498193900 then -- Lootify
+    local success, result = pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/LOOO'))()
+    end)
+    if success then
+        print('✅ Script Kiddies: Lootify script loaded.')
+    else
+        warn('❌ Script Kiddies: Failed to load Lootify script:', result)
+    end
 end
 
 print('✅ Script Kiddies fully loaded and executing without errors.')
