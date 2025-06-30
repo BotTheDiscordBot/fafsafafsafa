@@ -1,0 +1,64 @@
+-- 🖤 Jahceere Universal Anti-AFK GUI
+local plr = game.Players.LocalPlayer
+local vu = game:GetService("VirtualUser")
+local uis = game:GetService("UserInputService")
+local coregui = game:GetService("CoreGui")
+
+-- Cleanup if re-run
+pcall(function() coregui:FindFirstChild("JahAFK"):Destroy() end)
+
+-- GUI
+local screengui = Instance.new("ScreenGui")
+screengui.Name = "JahAFK"
+screengui.Parent = coregui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 200, 0, 60)
+frame.Position = UDim2.new(0.5, -100, 0.5, -30)
+frame.BackgroundColor3 = Color3.fromRGB(80, 0, 0) -- dark red UNACTIVE
+frame.Active = true
+frame.Draggable = true
+frame.Parent = screengui
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(1, -10, 1, -10)
+button.Position = UDim2.new(0, 5, 0, 5)
+button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+button.Text = "Toggle Anti-AFK"
+button.TextColor3 = Color3.fromRGB(0,0,0)
+button.Font = Enum.Font.SourceSansBold
+button.TextSize = 20
+button.Parent = frame
+
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(1, -10, 0, 20)
+statusLabel.Position = UDim2.new(0, 5, 0, 35)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Text = "UNACTIVE"
+statusLabel.TextColor3 = Color3.fromRGB(139, 0, 0) -- dark red
+statusLabel.Font = Enum.Font.SourceSansBold
+statusLabel.TextSize = 18
+statusLabel.Parent = frame
+
+-- Anti-AFK logic
+local afkEnabled = false
+
+button.MouseButton1Click:Connect(function()
+    afkEnabled = not afkEnabled
+    if afkEnabled then
+        frame.BackgroundColor3 = Color3.fromRGB(0, 80, 0) -- deep green ACTIVE
+        statusLabel.Text = "ACTIVE"
+        statusLabel.TextColor3 = Color3.fromRGB(144, 238, 144) -- light green
+    else
+        frame.BackgroundColor3 = Color3.fromRGB(80, 0, 0) -- dark red UNACTIVE
+        statusLabel.Text = "UNACTIVE"
+        statusLabel.TextColor3 = Color3.fromRGB(139, 0, 0) -- dark red
+    end
+end)
+
+plr.Idled:Connect(function()
+    if afkEnabled then
+        vu:CaptureController()
+        vu:ClickButton2(Vector2.new(0,0))
+    end
+end)
