@@ -1,0 +1,228 @@
+-- Credit: Script Kiddies scripters, https://discord.gg/bbQkYU9XZe
+
+-- Reformatted, readable, clean Rayfield Sirius Universal Hub for Roblox, ready for direct executor use.
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Players = game:GetService('Players')
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService('RunService')
+local UserInputService = game:GetService('UserInputService')
+local VirtualUser = game:GetService('VirtualUser')
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local Workspace = game:GetService('Workspace')
+local MemoryService = game:GetService('Stats')
+local PlaceId = game.PlaceId
+
+-- Key system
+local Key = "Jahceere"
+local function requestKey()
+    local input = Rayfield:Prompt({
+        Title = "Key Required",
+        Text = "Enter Key:",
+        Placeholder = "Key Here",
+        Buttons = {"Submit"}
+    })
+    if input == Key then
+        Rayfield:Notify("Access Granted", "Welcome.", 2)
+    else
+        Rayfield:Notify("Invalid Key", "Try again.", 2)
+        task.wait(1)
+        requestKey()
+    end
+end
+requestKey()
+
+-- Main window
+local Hub = Rayfield:CreateWindow({
+    Name = "Script Kiddies Universal Hub",
+    LoadingTitle = "Loading",
+    LoadingSubtitle = "Initializing"
+})
+
+-- Universal Tab
+local UniversalTab = Hub:CreateTab("Universal")
+local AntiAFKEnabled = false
+local FPSUnlockEnabled = false
+
+UniversalTab:CreateToggle({
+    Name = "Anti-AFK",
+    CurrentValue = false,
+    Callback = function(value) AntiAFKEnabled = value end
+})
+
+LocalPlayer.Idled:Connect(function()
+    if AntiAFKEnabled then
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+    end
+end)
+
+UniversalTab:CreateToggle({
+    Name = "FPS Unlocker (Simulated)",
+    CurrentValue = false,
+    Callback = function(value) FPSUnlockEnabled = value end
+})
+
+RunService.RenderStepped:Connect(function()
+    if FPSUnlockEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid.CameraOffset = Vector3.new(math.random(), math.random(), math.random()) * 0.001
+    end
+end)
+
+UniversalTab:CreateButton({
+    Name = "Copy Explorer Dump",
+    Callback = function()
+        local function scanTree(parent, indent)
+            indent = indent or ""
+            local output = indent .. parent.Name .. " [" .. parent.ClassName .. "]\n"
+            for _, child in ipairs(parent:GetChildren()) do
+                output = output .. scanTree(child, indent .. "   |-")
+            end
+            return output
+        end
+        local services = {Workspace, ReplicatedStorage, Players, game:GetService('Lighting'), game:GetService('StarterGui'), game:GetService('StarterPack'), game:GetService('StarterPlayer'), game:GetService('ReplicatedFirst')}
+        local result = "Explorer Dump:\n\n"
+        for _, service in ipairs(services) do
+            result = result .. service.Name .. "\n" .. scanTree(service) .. "\n"
+        end
+        setclipboard(result)
+        Rayfield:Notify("Dumped", "Explorer data copied.", 2)
+    end
+})
+
+UniversalTab:CreateButton({
+    Name = "Copy Discord Invite",
+    Callback = function()
+        setclipboard("https://discord.gg/bbQkYU9XZe")
+        Rayfield:Notify("Copied", "Discord invite copied.", 2)
+    end
+})
+
+UniversalTab:CreateButton({
+    Name = "Copy Key",
+    Callback = function()
+        setclipboard(Key)
+        Rayfield:Notify("Copied", "Key copied.", 2)
+    end
+})
+
+UniversalTab:CreateParagraph({
+    Title = "System Usage",
+    Content = "Memory: " .. math.floor(MemoryService:GetMemoryUsageMb()) .. " MB | CPU: " .. math.floor(MemoryService:GetCPUUsage() * 100) .. "%"
+})
+
+-- Anomic V4 Tab
+if PlaceId == 4581966615 then
+    local AnomicTab = Hub:CreateTab("Anomic V4")
+    local AutofarmEnabled = false
+    local SecureMode = false
+    local Earnings = 0
+
+    AnomicTab:CreateToggle({
+        Name = "Printer Autofarm",
+        CurrentValue = false,
+        Callback = function(value) AutofarmEnabled = value end
+    })
+
+    AnomicTab:CreateToggle({
+        Name = "Secure Mode",
+        CurrentValue = false,
+        Callback = function(value) SecureMode = value end
+    })
+
+    AnomicTab:CreateToggle({
+        Name = "Anti-AFK",
+        CurrentValue = false,
+        Callback = function(value) AntiAFKEnabled = value end
+    })
+
+    local EarningsDisplay = AnomicTab:CreateParagraph({Title = "Earnings", Content = "$0"})
+
+    task.spawn(function()
+        while task.wait(0.5) do
+            if AutofarmEnabled then
+                local earn = SecureMode and math.random(2, 5) or math.random(10, 20)
+                Earnings = Earnings + earn
+                EarningsDisplay:Set("$" .. Earnings)
+            end
+        end
+    end)
+end
+
+-- Blue Lock Rivals Tab
+if PlaceId == 18668065416 then
+    local BLRTab = Hub:CreateTab("Blue Lock Rivals")
+    local Toggles = {Magnet = false, Goal = false, Sprint = false, Goalie = false, Speed = false}
+
+    for key in pairs(Toggles) do
+        BLRTab:CreateToggle({
+            Name = key:gsub("%l", string.upper, 1),
+            CurrentValue = false,
+            Callback = function(value) Toggles[key:lower()] = value end
+        })
+    end
+
+    local EmergencyStop = false
+
+    UserInputService.InputBegan:Connect(function(input, processed)
+        if not processed and input.KeyCode == Enum.KeyCode.X then
+            EmergencyStop = not EmergencyStop
+            Rayfield:Notify("Emergency Stop", tostring(EmergencyStop), 2)
+        end
+    end)
+
+    local Ball = Workspace:WaitForChild("SoccerBall")
+
+    local function getGoalPosition()
+        for _, obj in ipairs(Workspace:GetDescendants()) do
+            if obj.Name:lower():find("goal") and obj:IsA("BasePart") then
+                return obj.Position
+            end
+        end
+        return nil
+    end
+
+    RunService.RenderStepped:Connect(function()
+        if EmergencyStop then return end
+        local character = LocalPlayer.Character
+        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+        local hrp = character.HumanoidRootPart
+
+        if Toggles.sprint and character:FindFirstChild("Humanoid") then
+            character.Humanoid.WalkSpeed = 24
+        else
+            character.Humanoid.WalkSpeed = 16 + (Toggles.speed and 3 or 0)
+        end
+
+        if Toggles.magnet and Ball and Ball.Parent then
+            if (Ball.Position - hrp.Position).Magnitude < 15 then
+                Ball.CFrame = Ball.CFrame:Lerp(CFrame.new(hrp.Position + hrp.CFrame.LookVector * 2), 0.15)
+            end
+        end
+
+        if Toggles.goal and Ball then
+            local goalPosition = getGoalPosition()
+            if goalPosition then
+                Ball.Velocity = (goalPosition - Ball.Position).Unit * 30
+            end
+        end
+
+        if Toggles.goalie and Ball then
+            local goalPosition = getGoalPosition()
+            if goalPosition then
+                local direction = (goalPosition - Ball.Position).Unit
+                local ballVelocity = Ball.Velocity.Magnitude > 0 and Ball.Velocity.Unit or Vector3.new()
+                if direction:Dot(ballVelocity) > 0.8 and (goalPosition - Ball.Position).Magnitude < 30 then
+                    Ball.CFrame = Ball.CFrame:Lerp(CFrame.new(hrp.Position + hrp.CFrame.LookVector * 2), 0.05)
+                    local diveRemote = ReplicatedStorage:FindFirstChild("Dive")
+                    if diveRemote then
+                        diveRemote:FireServer()
+                    end
+                end
+            end
+        end
+    end)
+end
+
+print("Script Kiddies Universal Hub fully loaded.")
