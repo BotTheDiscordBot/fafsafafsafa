@@ -5,7 +5,7 @@ local function loadScripts()
         return loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
     end)
     if success then
-        print("Infinite Yield loaded successfully")
+        print("ScriptKiddies Infinite Yield loaded successfully")
     else
         warn("Failed to load Infinite Yield:", result)
     end
@@ -15,7 +15,7 @@ local function loadScripts()
         return loadstring(game:HttpGet("https://pastebin.com/raw/8kvFNFRi"))()
     end)
     if success then
-        print("ESP loaded successfully")
+        print("ScriptKiddies ESP loaded successfully")
     else
         warn("Failed to load ESP:", result)
     end
@@ -35,7 +35,7 @@ local function loadScripts()
         return loadstring(game:HttpGet("https://pastebin.com/raw/YYv9q1Wc"))()
     end)
     if success then
-        print("Additional script loaded successfully")
+        print("Script Kiddies Additional script loaded successfully")
     else
         warn("Failed to load additional script:", result)
     end
