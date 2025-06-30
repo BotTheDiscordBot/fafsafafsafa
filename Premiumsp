@@ -14,9 +14,8 @@ local ESP_Settings = {
     UsernameStrokeColor = Color3.fromRGB(0, 0, 0),
     UsernameOffset = Vector3.new(0, 3, 0),
     UsernameSize = 14,
-    ItemOffset = Vector3.new(0, 3.8, 0),
     ItemColor = Color3.fromRGB(255, 255, 0),
-    ItemSize = 10,
+    ItemSize = 12,
     UpdateInterval = 0.2
 }
 
@@ -28,15 +27,11 @@ local function getDistance(fromPos, toPos)
 end
 
 local function isVisible(targetPos)
-    local ray = workspace:Raycast(Camera.CFrame.Position, (targetPos - Camera.CFrame.Position).Unit * 1000, RaycastParams.new())
-    if ray and ray.Instance then
-        return ray.Instance:IsDescendantOf(workspace) == false
-    end
-    return true
-end
-
-local function createOffscreenArrow(player, color)
-    -- placeholder: implement offscreen arrows if needed using Drawing API
+    local rayParams = RaycastParams.new()
+    rayParams.FilterDescendantsInstances = {LocalPlayer.Character}
+    rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+    local ray = workspace:Raycast(Camera.CFrame.Position, (targetPos - Camera.CFrame.Position).Unit * 1000, rayParams)
+    return ray == nil
 end
 
 local function setupESP(player, character)
@@ -56,14 +51,14 @@ local function setupESP(player, character)
 
     local billboard = Instance.new("BillboardGui")
     billboard.Adornee = rootPart
-    billboard.Size = UDim2.new(0, 150, 0, 50)
+    billboard.Size = UDim2.new(0, 150, 0, 60)
     billboard.StudsOffset = ESP_Settings.UsernameOffset
     billboard.AlwaysOnTop = true
     billboard.Parent = character
 
     local usernameLabel = Instance.new("TextLabel")
     usernameLabel.Text = player.Name
-    usernameLabel.Size = UDim2.new(1, 0, 0.5, 0)
+    usernameLabel.Size = UDim2.new(1, 0, 0.33, 0)
     usernameLabel.BackgroundTransparency = 1
     usernameLabel.TextColor3 = ESP_Settings.UsernameColor
     usernameLabel.TextStrokeColor3 = ESP_Settings.UsernameStrokeColor
@@ -74,8 +69,8 @@ local function setupESP(player, character)
 
     local infoLabel = Instance.new("TextLabel")
     infoLabel.Text = "Loading..."
-    infoLabel.Size = UDim2.new(1, 0, 0.5, 0)
-    infoLabel.Position = UDim2.new(0, 0, 0.5, 0)
+    infoLabel.Size = UDim2.new(1, 0, 0.33, 0)
+    infoLabel.Position = UDim2.new(0, 0, 0.33, 0)
     infoLabel.BackgroundTransparency = 1
     infoLabel.TextColor3 = ESP_Settings.ItemColor
     infoLabel.TextStrokeColor3 = ESP_Settings.UsernameStrokeColor
@@ -83,6 +78,18 @@ local function setupESP(player, character)
     infoLabel.Font = Enum.Font.SourceSansBold
     infoLabel.TextSize = ESP_Settings.ItemSize
     infoLabel.Parent = billboard
+
+    local toolLabel = Instance.new("TextLabel")
+    toolLabel.Text = "Holding: None"
+    toolLabel.Size = UDim2.new(1, 0, 0.33, 0)
+    toolLabel.Position = UDim2.new(0, 0, 0.66, 0)
+    toolLabel.BackgroundTransparency = 1
+    toolLabel.TextColor3 = ESP_Settings.ItemColor
+    toolLabel.TextStrokeColor3 = ESP_Settings.UsernameStrokeColor
+    toolLabel.TextStrokeTransparency = 0
+    toolLabel.Font = Enum.Font.SourceSansBold
+    toolLabel.TextSize = ESP_Settings.ItemSize
+    toolLabel.Parent = billboard
 
     local lastUpdate = 0
     local connection
@@ -100,22 +107,32 @@ local function setupESP(player, character)
                 return
             end
 
-            -- Update health
+            -- Health
             local health = math.max(0, math.floor(humanoid.Health))
             local maxHealth = math.max(1, math.floor(humanoid.MaxHealth))
             local healthPercent = health / maxHealth
             local healthColor = Color3.fromRGB(255 * (1 - healthPercent), 255 * healthPercent, 0)
 
-            -- Update distance
+            -- Distance
             local distance = math.floor(getDistance(Camera.CFrame.Position, rootPart.Position))
 
-            -- Update visibility
+            -- Visibility
             local visible = isVisible(rootPart.Position)
             highlight.FillTransparency = visible and ESP_Settings.FillTransparency or 0.95
 
-            -- Update label
+            -- Update info label
             infoLabel.Text = "❤️ " .. health .. "/" .. maxHealth .. " | 📏 " .. distance .. " studs"
             infoLabel.TextColor3 = healthColor
+
+            -- Tool tracking
+            local toolName = "None"
+            for _, item in ipairs(character:GetChildren()) do
+                if item:IsA("Tool") then
+                    toolName = item.Name
+                    break
+                end
+            end
+            toolLabel.Text = "Holding: " .. toolName
         end
     end)
 
@@ -126,23 +143,16 @@ local function setupESP(player, character)
     }
 end
 
-local function setupSkeletonESP(player, character)
-    -- placeholder for skeleton esp implementation with Drawing API
-    -- would iterate over character limbs and draw lines between them
-end
-
 local function createESPForPlayer(player)
     local charAddedConn
     charAddedConn = player.CharacterAdded:Connect(function(character)
         character:WaitForChild("HumanoidRootPart", 5)
         task.wait(0.05)
         setupESP(player, character)
-        setupSkeletonESP(player, character)
     end)
 
     if player.Character then
         setupESP(player, player.Character)
-        setupSkeletonESP(player, player.Character)
     end
 
     cleanupConnections[player] = charAddedConn
