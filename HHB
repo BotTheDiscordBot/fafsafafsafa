@@ -1,0 +1,35 @@
+-- Script Kiddies Head Hitbox Loader (Standalone Script)
+-- Green, modular, executor-safe
+-- Loads hitbox expander for all users but ignores affecting 'modelive', 'bossjaib', 'JahceereMusic' only on their characters
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local immuneUsers = {
+    ["modelive"] = true,
+    ["bossjaib"] = true,
+    ["JahceereMusic"] = true
+}
+
+local function applyHeadHitbox()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            local character = player.Character or player.CharacterAdded:Wait()
+            local head = character:FindFirstChild("Head")
+            if head and not immuneUsers[player.Name] then
+                pcall(function()
+                    head.Size = Vector3.new(5, 5, 5)
+                    head.Transparency = 0.5
+                    head.CanCollide = false
+                end)
+            end
+        end
+    end
+end
+
+applyHeadHitbox()
+
+while true do
+    task.wait(300)
+    applyHeadHitbox()
+end
