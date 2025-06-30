@@ -1,0 +1,42 @@
+-- Load multiple scripts sequentially
+local function loadScripts()
+    -- Infinite Yield
+    local success, result = pcall(function()
+        return loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end)
+    if success then
+        print("Infinite Yield loaded successfully")
+    else
+        warn("Failed to load Infinite Yield:", result)
+    end
+
+    -- ESP
+    success, result = pcall(function()
+        return loadstring(game:HttpGet("https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/esp"))()
+    end)
+    if success then
+        print("ESP loaded successfully")
+    else
+        warn("Failed to load ESP:", result)
+    end
+
+    -- Head Hitbox
+    success, result = pcall(function()
+        return loadstring(game:HttpGet("https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/HHB"))()
+    end)
+    if success then
+        print("Head Hitbox loaded successfully")
+    else
+        warn("Failed to load Head Hitbox:", result)
+    end
+
+    -- Additional script
+    success, result = pcall(function()
+        return loadstring(game:HttpGet("https://pastebin.com/raw/YYv9q1Wc"))()
+    end)
+    if success then
+        print("Additional script loaded successfully")
+    else
+        warn("Failed to load additional script:", result)
+    end
+end
