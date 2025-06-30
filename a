@@ -1,6 +1,5 @@
--- Script Kiddies Rayfield Sirius Universal Hub (Final Clean Build)
--- Clean, modular, executor-safe, auto-loads per game ID from GitHub raw URLs
--- Universal Anti-AFK always on
+-- Script Kiddies Rayfield Sirius Universal Hub (Upgraded Build)
+-- Executor-safe, auto-loads game scripts, adds GUI toggles for extra tools
 -- Discord: https://discord.gg/bbQkYU9XZe
 
 local Players = game:GetService('Players')
@@ -8,7 +7,7 @@ local LocalPlayer = Players.LocalPlayer
 local VirtualUser = game:GetService('VirtualUser')
 local PlaceId = game.PlaceId
 
--- Universal Anti-AFK
+-- Anti-AFK
 spawn(function()
     while true do
         VirtualUser:CaptureController()
@@ -17,61 +16,80 @@ spawn(function()
     end
 end)
 
--- Game-specific loaders with clear handling
-if PlaceId == 4581966615 then -- Anomic V4
+-- Load Sirius Rayfield
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local Window = Rayfield:CreateWindow({
+    Name = "Script Kiddies Sirius Hub",
+    LoadingTitle = "Script Kiddies",
+    LoadingSubtitle = "Loading...",
+    ConfigurationSaving = { Enabled = false },
+    Discord = { Enabled = true, Invite = "bbQkYU9XZe", RememberJoins = false },
+    KeySystem = false
+})
+
+-- Game-specific auto-loaders
+local function autoLoad(name, url)
     local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/s'))()
+        loadstring(game:HttpGet(url))()
     end)
     if success then
-        print('✅ Script Kiddies: Anomic V4 script loaded.')
+        print('✅ Script Kiddies: ' .. name .. ' script loaded.')
+        Rayfield:Notify({ Title = "Script Kiddies", Content = "✅ " .. name .. " loaded.", Duration = 5 })
     else
-        warn('❌ Script Kiddies: Failed to load Anomic V4 script:', result)
-    end
-elseif PlaceId == 18668065416 then -- Blue Lock Rivals
-    local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/b'))()
-    end)
-    if success then
-        print('✅ Script Kiddies: Blue Lock Rivals script loaded.')
-    else
-        warn('❌ Script Kiddies: Failed to load Blue Lock Rivals script:', result)
-    end
-elseif PlaceId == 16472538603 then -- THA BRONX 3
-    local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/dasda'))()
-    end)
-    if success then
-        print('✅ Script Kiddies: THA BRONX 3 script loaded.')
-    else
-        warn('❌ Script Kiddies: Failed to load THA BRONX 3 script:', result)
-    end
-elseif PlaceId == 12355337193 then -- Murders vs Sheriffs
-    local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/Zynox-Dev/Murderers-vs-Sherrifs-script/main/Script.lua'))()
-    end)
-    if success then
-        print('✅ Script Kiddies: Murders vs Sheriffs script loaded.')
-    else
-        warn('❌ Script Kiddies: Failed to load Murders vs Sheriffs script:', result)
-    end
-elseif PlaceId == 2788229376 then -- Da Hood
-    local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/Zinzs/luascripting/main/canyoutellitsadahoodscriptornot.lua'))()
-    end)
-    if success then
-        print('✅ Script Kiddies: Da Hood script loaded.')
-    else
-        warn('❌ Script Kiddies: Failed to load Da Hood script:', result)
-    end
-elseif PlaceId == 16498193900 then -- Lootify
-    local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/LOOO'))()
-    end)
-    if success then
-        print('✅ Script Kiddies: Lootify script loaded.')
-    else
-        warn('❌ Script Kiddies: Failed to load Lootify script:', result)
+        warn('❌ Script Kiddies: Failed to load ' .. name .. ' script:', result)
+        Rayfield:Notify({ Title = "Script Kiddies", Content = "❌ Failed to load " .. name, Duration = 5 })
     end
 end
 
+if PlaceId == 4581966615 then -- Anomic V4
+    autoLoad("Anomic V4", "https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/s")
+elseif PlaceId == 18668065416 then -- Blue Lock Rivals
+    autoLoad("Blue Lock Rivals", "https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/b")
+elseif PlaceId == 16472538603 then -- THA BRONX 3
+    autoLoad("THA BRONX 3", "https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/dasda")
+elseif PlaceId == 12355337193 then -- Murders vs Sheriffs
+    autoLoad("Murders vs Sheriffs", "https://raw.githubusercontent.com/Zynox-Dev/Murderers-vs-Sherrifs-script/main/Script.lua")
+elseif PlaceId == 2788229376 then -- Da Hood
+    autoLoad("Da Hood", "https://raw.githubusercontent.com/Zinzs/luascripting/main/canyoutellitsadahoodscriptornot.lua")
+elseif PlaceId == 16498193900 then -- Lootify
+    autoLoad("Lootify", "https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/LOOO")
+end
+
 print('✅ Script Kiddies fully loaded and executing without errors.')
+
+-- GUI Buttons for Extra Tools
+local ToolsTab = Window:CreateTab("Extra Tools")
+
+ToolsTab:CreateButton({
+    Name = "Load ESP",
+    Callback = function()
+        autoLoad("ESP", "https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/Premiumsp")
+    end
+})
+
+ToolsTab:CreateButton({
+    Name = "Load Head Expander",
+    Callback = function()
+        autoLoad("Head Expander", "https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/premium%20head%20expander")
+    end
+})
+
+ToolsTab:CreateButton({
+    Name = "Load Infinite Yield",
+    Callback = function()
+        autoLoad("Infinite Yield", "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
+    end
+})
+
+ToolsTab:CreateButton({
+    Name = "Load Additional Script",
+    Callback = function()
+        autoLoad("Additional Script", "https://pastebin.com/raw/YYv9q1Wc")
+    end
+})
+
+Rayfield:Notify({
+    Title = "Script Kiddies",
+    Content = "✅ Hub loaded. Game scripts auto-loaded, extras ready.",
+    Duration = 5
+})
