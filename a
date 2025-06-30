@@ -1,7 +1,6 @@
--- Script Kiddies Rayfield Sirius Hub: Full Final Build (Clean)
+-- Script Kiddies Rayfield Sirius Universal Hub (Final Clean Build)
 -- Clean, modular, executor-safe, auto-loads per game ID from GitHub raw URLs
 -- Universal Anti-AFK always on
--- Head hitbox is now only loaded for specific games, not universally
 -- Discord: https://discord.gg/bbQkYU9XZe
 
 local Players = game:GetService('Players')
@@ -9,37 +8,52 @@ local LocalPlayer = Players.LocalPlayer
 local VirtualUser = game:GetService('VirtualUser')
 local PlaceId = game.PlaceId
 
--- Always-on Universal Anti-AFK
+-- Universal Anti-AFK
 spawn(function()
     while true do
         VirtualUser:CaptureController()
         VirtualUser:ClickButton2(Vector2.new())
-        wait(30)
+        task.wait(30)
     end
 end)
 
-
--- Game-specific script loaders
+-- Game-specific loaders with clear handling
 if PlaceId == 4581966615 then -- Anomic V4
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/s'))()
+    local success, result = pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/s'))()
+    end)
+    if success then
+        print('✅ Script Kiddies: Anomic V4 script loaded.')
+    else
+        warn('❌ Script Kiddies: Failed to load Anomic V4 script:', result)
+    end
 elseif PlaceId == 18668065416 then -- Blue Lock Rivals
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/b'))()
+    local success, result = pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/b'))()
+    end)
+    if success then
+        print('✅ Script Kiddies: Blue Lock Rivals script loaded.')
+    else
+        warn('❌ Script Kiddies: Failed to load Blue Lock Rivals script:', result)
+    end
 elseif PlaceId == 16472538603 then -- THA BRONX 3
     local success, result = pcall(function()
         loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/dasda'))()
     end)
     if success then
-        print("✅ Script Kiddies: THA BRONX 3 script loaded successfully.")
-        loadHeadHitbox() -- Only load head hitbox in THA BRONX 3
-        spawn(function()
-            while true do
-                task.wait(300)
-                loadHeadHitbox()
-            end
-        end)
+        print('✅ Script Kiddies: THA BRONX 3 script loaded.')
     else
-        warn("❌ Script Kiddies: Failed to load THA BRONX 3 script:", result)
+        warn('❌ Script Kiddies: Failed to load THA BRONX 3 script:', result)
+    end
+elseif PlaceId == 12355337193 then -- Murders vs Sheriffs
+    local success, result = pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/Zynox-Dev/Murderers-vs-Sherrifs-script/main/Script.lua'))()
+    end)
+    if success then
+        print('✅ Script Kiddies: Murders vs Sheriffs script loaded.')
+    else
+        warn('❌ Script Kiddies: Failed to load Murders vs Sheriffs script:', result)
     end
 end
 
-print('✅ Script Kiddies Hub fully loaded and executing.')
+print('✅ Script Kiddies Hub fully loaded and executing')
