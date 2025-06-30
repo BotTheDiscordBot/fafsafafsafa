@@ -1,0 +1,131 @@
+-- Script Kiddies ESP Script with Auto-Reload Every 5 Minutes Without Interruptions
+-- Green, modular, executor-safe
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local function loadESP()
+    local ESP_Settings = {
+        OutlineColor = Color3.fromRGB(255, 255, 255),
+        FillColor = Color3.fromRGB(255, 255, 255),
+        OutlineTransparency = 0,
+        FillTransparency = 0.8,
+        UsernameColor = Color3.fromRGB(255, 255, 255),
+        UsernameStrokeColor = Color3.fromRGB(0, 0, 0),
+        UsernameOffset = Vector3.new(0, 3, 0),
+        UsernameSize = 14,
+        ItemOffset = Vector3.new(0, 3.8, 0),
+        ItemColor = Color3.fromRGB(255, 255, 0),
+        ItemSize = 10
+    }
+
+    local playerESPMap = {}
+
+    local function setupESP(player, character)
+        if not character or not player or player == LocalPlayer or playerESPMap[player] then return end
+
+        local rootPart = character:FindFirstChild("HumanoidRootPart")
+        if not rootPart then return end
+
+        local highlight = Instance.new("Highlight")
+        highlight.Adornee = character
+        highlight.OutlineColor = ESP_Settings.OutlineColor
+        highlight.FillColor = ESP_Settings.FillColor
+        highlight.OutlineTransparency = ESP_Settings.OutlineTransparency
+        highlight.FillTransparency = ESP_Settings.FillTransparency
+        highlight.Parent = character
+
+        local billboard = Instance.new("BillboardGui")
+        billboard.Adornee = rootPart
+        billboard.Size = UDim2.new(0, 100, 0, 40)
+        billboard.StudsOffset = ESP_Settings.UsernameOffset
+        billboard.AlwaysOnTop = true
+        billboard.Parent = character
+
+        local usernameLabel = Instance.new("TextLabel")
+        usernameLabel.Text = player.Name
+        usernameLabel.Size = UDim2.new(1, 0, 0.6, 0)
+        usernameLabel.BackgroundTransparency = 1
+        usernameLabel.TextColor3 = ESP_Settings.UsernameColor
+        usernameLabel.TextStrokeColor3 = ESP_Settings.UsernameStrokeColor
+        usernameLabel.TextStrokeTransparency = 0
+        usernameLabel.TextScaled = false
+        usernameLabel.Font = Enum.Font.SourceSansBold
+        usernameLabel.TextSize = ESP_Settings.UsernameSize
+        usernameLabel.Parent = billboard
+
+        local itemLabel = Instance.new("TextLabel")
+        itemLabel.Text = "Holding: None"
+        itemLabel.Size = UDim2.new(1, 0, 0.4, 0)
+        itemLabel.Position = UDim2.new(0, 0, 0.6, 0)
+        itemLabel.BackgroundTransparency = 1
+        itemLabel.TextColor3 = ESP_Settings.ItemColor
+        itemLabel.TextStrokeColor3 = ESP_Settings.UsernameStrokeColor
+        itemLabel.TextStrokeTransparency = 0
+        itemLabel.TextScaled = false
+        itemLabel.Font = Enum.Font.SourceSansBold
+        itemLabel.TextSize = ESP_Settings.ItemSize
+        itemLabel.Parent = billboard
+
+        local function updateTool()
+            local toolFound = nil
+            for _, item in ipairs(character:GetChildren()) do
+                if item:IsA("Tool") then
+                    toolFound = item
+                    break
+                end
+            end
+            itemLabel.Text = "Holding: " .. (toolFound and toolFound.Name or "None")
+        end
+
+        local connection = RunService.RenderStepped:Connect(function()
+            if not character:IsDescendantOf(game) then
+                highlight:Destroy()
+                billboard:Destroy()
+                connection:Disconnect()
+                playerESPMap[player] = nil
+            else
+                updateTool()
+            end
+        end)
+
+        playerESPMap[player] = {
+            highlight = highlight,
+            billboard = billboard,
+            updater = connection
+        }
+    end
+
+    local function createESPForPlayer(player)
+        player.CharacterAdded:Connect(function(character)
+            character:WaitForChild("HumanoidRootPart", 5)
+            task.wait(0.1)
+            setupESP(player, character)
+        end)
+        if player.Character then
+            setupESP(player, player.Character)
+        end
+    end
+
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            createESPForPlayer(player)
+        end
+    end
+
+    Players.PlayerAdded:Connect(function(player)
+        if player ~= LocalPlayer then
+            createESPForPlayer(player)
+        end
+    end)
+end
+
+-- Initial ESP load
+loadESP()
+
+-- Reload every 5 minutes without affecting gameplay
+while true do
+    task.wait(300)
+    loadESP()
+end
