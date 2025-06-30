@@ -1,12 +1,24 @@
--- Script Kiddies Rayfield Sirius Universal Hub (Final Clean Build)
--- Clean, modular, executor-safe, auto-loads per game ID from GitHub raw URLs
--- Universal Anti-AFK always on
+-- Script Kiddies Rayfield Sirius Universal Hub (Key Split Loader)
 -- Discord: https://discord.gg/bbQkYU9XZe
 
 local Players = game:GetService('Players')
 local LocalPlayer = Players.LocalPlayer
 local VirtualUser = game:GetService('VirtualUser')
 local PlaceId = game.PlaceId
+
+-- Key system
+local userKey = "Jahceere" -- Change dynamically via GUI later
+local mode = "FREE"
+
+if userKey == "JahP" then
+    mode = "PREMIUM"
+    print("🔑 Script Kiddies: Premium Key Accepted. Loading premium scripts.")
+elseif userKey == "Jahceere" then
+    mode = "UNPAID"
+    print("🔓 Script Kiddies: Unpaid user mode activated. Loading unpaid user scripts.")
+else
+    warn("⚠️ Invalid key provided. No scripts will load.")
+end
 
 -- Universal Anti-AFK
 spawn(function()
@@ -17,61 +29,60 @@ spawn(function()
     end
 end)
 
--- Game-specific loaders with clear handling
-if PlaceId == 4581966615 then -- Anomic V4
+-- Loader function for clarity
+local function loadScript(url, gameName)
     local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/s'))()
+        loadstring(game:HttpGet(url))()
     end)
     if success then
-        print('✅ Script Kiddies: Anomic V4 script loaded.')
+        print("✅ Script Kiddies: " .. gameName .. " script loaded.")
     else
-        warn('❌ Script Kiddies: Failed to load Anomic V4 script:', result)
-    end
-elseif PlaceId == 18668065416 then -- Blue Lock Rivals
-    local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/b'))()
-    end)
-    if success then
-        print('✅ Script Kiddies: Blue Lock Rivals script loaded.')
-    else
-        warn('❌ Script Kiddies: Failed to load Blue Lock Rivals script:', result)
-    end
-elseif PlaceId == 16472538603 then -- THA BRONX 3
-    local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/dasda'))()
-    end)
-    if success then
-        print('✅ Script Kiddies: THA BRONX 3 script loaded.')
-    else
-        warn('❌ Script Kiddies: Failed to load THA BRONX 3 script:', result)
-    end
-elseif PlaceId == 12355337193 then -- Murders vs Sheriffs
-    local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/Zynox-Dev/Murderers-vs-Sherrifs-script/main/Script.lua'))()
-    end)
-    if success then
-        print('✅ Script Kiddies: Murders vs Sheriffs script loaded.')
-    else
-        warn('❌ Script Kiddies: Failed to load Murders vs Sheriffs script:', result)
-    end
-elseif PlaceId == 2788229376 then -- Da Hood
-    local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/Zinzs/luascripting/main/canyoutellitsadahoodscriptornot.lua'))()
-    end)
-    if success then
-        print('✅ Script Kiddies: Da Hood script loaded.')
-    else
-        warn('❌ Script Kiddies: Failed to load Da Hood script:', result)
-    end
-elseif PlaceId == 16498193900 then -- Lootify
-    local success, result = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/LOOO'))()
-    end)
-    if success then
-        print('✅ Script Kiddies: Lootify script loaded.')
-    else
-        warn('❌ Script Kiddies: Failed to load Lootify script:', result)
+        warn("❌ Script Kiddies: Failed to load " .. gameName .. " script:", result)
     end
 end
 
-print('✅ Script Kiddies fully loaded and executing without errors.')
+-- Game-specific loaders
+if PlaceId == 4581966615 then -- Anomic V4
+    if mode == "PREMIUM" then
+        loadScript('https://raw.githubusercontent.com/YourPremiumRepo/AnomicV4Premium/main/script.lua', "Anomic V4 (Premium)")
+    elseif mode == "UNPAID" then
+        loadScript('https://raw.githubusercontent.com/YourUnpaidRepo/AnomicV4Unpaid/main/script.lua', "Anomic V4 (Unpaid)")
+    end
+
+elseif PlaceId == 18668065416 then -- Blue Lock Rivals
+    if mode == "PREMIUM" then
+        loadScript('https://raw.githubusercontent.com/YourPremiumRepo/BlueLockRivalsPremium/main/script.lua', "Blue Lock Rivals (Premium)")
+    elseif mode == "UNPAID" then
+        loadScript('https://raw.githubusercontent.com/YourUnpaidRepo/BlueLockRivalsUnpaid/main/script.lua', "Blue Lock Rivals (Unpaid)")
+    end
+
+elseif PlaceId == 16472538603 then -- THA BRONX 3
+    if mode == "PREMIUM" then
+        loadScript('https://raw.githubusercontent.com/YourPremiumRepo/THABRONX3Premium/main/script.lua', "THA BRONX 3 (Premium)")
+    elseif mode == "UNPAID" then
+        loadScript('https://raw.githubusercontent.com/YourUnpaidRepo/THABRONX3Unpaid/main/script.lua', "THA BRONX 3 (Unpaid)")
+    end
+
+elseif PlaceId == 12355337193 then -- Murders vs Sheriffs
+    if mode == "PREMIUM" then
+        loadScript('https://raw.githubusercontent.com/YourPremiumRepo/MurdersSheriffsPremium/main/script.lua', "Murders vs Sheriffs (Premium)")
+    elseif mode == "UNPAID" then
+        loadScript('https://raw.githubusercontent.com/YourUnpaidRepo/MurdersSheriffsUnpaid/main/script.lua', "Murders vs Sheriffs (Unpaid)")
+    end
+
+elseif PlaceId == 2788229376 then -- Da Hood
+    if mode == "PREMIUM" then
+        loadScript('https://raw.githubusercontent.com/YourPremiumRepo/DaHoodPremium/main/script.lua', "Da Hood (Premium)")
+    elseif mode == "UNPAID" then
+        loadScript('https://raw.githubusercontent.com/YourUnpaidRepo/DaHoodUnpaid/main/script.lua', "Da Hood (Unpaid)")
+    end
+
+elseif PlaceId == 16498193900 then -- Lootify
+    if mode == "PREMIUM" then
+        loadScript('https://raw.githubusercontent.com/YourPremiumRepo/LootifyPremium/main/script.lua', "Lootify (Premium)")
+    elseif mode == "UNPAID" then
+        loadScript('https://raw.githubusercontent.com/YourUnpaidRepo/LootifyUnpaid/main/script.lua', "Lootify (Unpaid)")
+    end
+end
+
+print("✅ Script Kiddies loader completed. Mode:", mode)
