@@ -1,4 +1,4 @@
--- Load multiple scripts sequentially
+-- Load multiple scripts sequentially with ScriptKiddies tracking
 local function loadScripts()
     -- Infinite Yield
     local success, result = pcall(function()
@@ -12,7 +12,7 @@ local function loadScripts()
 
     -- ESP
     success, result = pcall(function()
-        return loadstring(game:HttpGet("https://pastebin.com/raw/8kvFNFRi"))()
+        return loadstring(game:HttpGet("https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/Premiumsp"))()
     end)
     if success then
         print("ScriptKiddies ESP loaded successfully")
@@ -20,22 +20,22 @@ local function loadScripts()
         warn("Failed to load ESP:", result)
     end
 
-    -- Head Hitbox
+    -- Head Hitbox Expander
     success, result = pcall(function()
-        return loadstring(game:HttpGet("https://pastebin.com/raw/5Eau3mLu"))()
+        return loadstring(game:HttpGet("https://raw.githubusercontent.com/BotTheDiscordBot/fafsafafsafa/refs/heads/main/premium%20head%20expander"))()
     end)
     if success then
-        print("Head Hitbox loaded successfully")
+        print("ScriptKiddies Head Hitbox loaded successfully")
     else
         warn("Failed to load Head Hitbox:", result)
     end
 
-    -- Additional script
+    -- Additional Script
     success, result = pcall(function()
         return loadstring(game:HttpGet("https://pastebin.com/raw/YYv9q1Wc"))()
     end)
     if success then
-        print("Script Kiddies Additional script loaded successfully")
+        print("ScriptKiddies Additional script loaded successfully")
     else
         warn("Failed to load additional script:", result)
     end
